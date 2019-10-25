@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+    <style>
+        .password-field {
+            border: 1px solid grey;
+            width: 300px;
+            height: 30px;
+            margin-bottom: 20px;
+            padding: 10px 10px;
+            font-size: 25px;
+        }
+
+        .btn {
+            background: grey;
+            color: #ffffff;
+            font-size: 14px;
+            padding: 15px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+    <div>
+        <div class="password-field"></div>
+        <div>Password length <input class="length-input" type="number" min='0' max='30' value="10" /></div>
+        <div>Numbers <input class="numbers-input" type="checkbox" checked /></div>
+        <div>Uppercase <input class="uppercase-input" type="checkbox" checked /></div>
+        <div>Lowercase <input class="lowercase-input" type="checkbox" checked /></div>
+        <div>Symbols <input class="symbols-input" type="checkbox" checked /></div>
+        <div class="btn">Generate!</div>
+    </div>
+    <script>
+        // Elements
+        const button = document.querySelector('.btn');
+        const passwordField = document.querySelector('.password-field');
+        const lengthEl = document.querySelector('.length-input');
+        const numbersEl = document.querySelector('.numbers-input');
+        const lowerEl = document.querySelector('.lowercase-input');
+        const upperEl = document.querySelector('.uppercase-input');
+        const symbolsEl = document.querySelector('.symbols-input');
+
+        // Generate functions
+        const generateNumber = () => {
+            return String.fromCharCode(Math.floor(Math.random() * 10) + 48);
+        }
+        const generateUppercaseLetter = () => {
+            return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+        }
+        const generateLowercaseLetter = () => {
+            return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+        }
+        const generateSymbol = () => {
+            const symbols = '!@#$%^&*(){}[]=<>/,.';
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }  
+
+        // Functions' object
+        const generateFunctions = {
+            numbers: generateNumber,
+            uppers: generateUppercaseLetter,
+            lowers: generateLowercaseLetter,
+            symbols: generateSymbol
+        }  
+
+        // Click on button
+        button.addEventListener('click', function () {
+            passwordField.textContent = generateNewPassword();
+        });
+
+        function generateNewPassword() {
+            const functionsArr = [];
+            let password = '';
+
+            let passwordLength = function(){
+                if (+lengthEl.value < lengthEl.min) {
+                    return lengthEl.value = lengthEl.min
+                } else if (+lengthEl.value > lengthEl.max) {
+                    return lengthEl.value = lengthEl.max
+                } else {
+                    return +lengthEl.value
+                }
+            }();
+
+            const checkMarks = {
+                numbers: numbersEl.checked,
+                lowers: lowerEl.checked,
+                uppers: upperEl.checked,
+                symbols: symbolsEl.checked
+            }
+
+            Object.keys(checkMarks).forEach(item => {
+                if (checkMarks[item]) {
+                    functionsArr.push(generateFunctions[item]);
+                };
+            });
+
+            if (functionsArr.length === 0) {
+                return '';
+            }
+
+            for (var i = 0; i < passwordLength; i++) {
+                var arrItem = getRandomFunction(functionsArr.length);
+                password += functionsArr[arrItem]();
+            }
+
+            return password;
+        }
+
+        function getRandomFunction(length) {
+            return Math.floor(Math.random() * Math.floor(length));
+        }       
+
+    </script>
+</body>
+
+</html>
